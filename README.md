@@ -2,7 +2,7 @@
 A telegram bot for asking question to new chat member.
 
 #### Features
-If they can not answer the question in on minute, they will be kicked out as quilckly as possible.
+If they can not answer the question in one minute, they will be kicked out as quilckly as possible.
 
 #### Docker
 ```
