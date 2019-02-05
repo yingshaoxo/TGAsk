@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
+import time
 
 """
 export master_user_id=
@@ -104,6 +105,8 @@ def handle_all_msg(bot, update):
             })
             print(f"{user.id} came to this group")
         io.write_settings("people", people)
+        time.sleep(61)
+        kick_them_out_if_possible(bot, update)
 
 
 def kick_them_out_if_possible(bot, update):
