@@ -3,13 +3,13 @@
 import os
 
 """
-export master_chat_id=
+export master_user_id=
 export telegram_bot_token=
 """
 
-master_chat_id = int('-' + os.getenv("master_chat_id", 354524029))
+master_user_id = int(os.getenv("master_user_id", "131513300"))
 TOKEN = os.getenv("telegram_bot_token", "")
-print(master_chat_id)
+print(master_user_id)
 print(TOKEN)
 
 
@@ -41,9 +41,9 @@ people = io.read_settings("people", people)
 def set(bot, update):
     global waitting_for_master
 
-    if update.message.chat_id != master_chat_id:
+    if update.message.from_user.id != master_user_id:
         update.message.reply_text(
-            f"You are not admin!\n\nYour chat_id is:\n{str(update.message.chat_id)}")
+            f"You are not admin!\nAdmin user_id is {master_user_id}\n\nYour user_id is:\n{str(update.message.from_user.id)}")
     else:
         update.message.reply_text(
             f"What's your question? \n\nExample:\nyou + me = ?\nNone\nWe\n2")
@@ -60,7 +60,7 @@ def handle_text_msg(bot, update):
 
     kick_them_out_if_possible(bot, update)
 
-    if update.message.chat_id != master_chat_id:
+    if update.message.from_user.id != master_user_id:
         pass
     else:
         if waitting_for_master == True:

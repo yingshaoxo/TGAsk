@@ -6,7 +6,7 @@ If they can not answer the question in one minute, they will be kicked out as qu
 
 #### Docker
 ```
-sudo docker run -d -e telegram_bot_token=TOKEN -e master_chat_id=YOU_CHAT_ID --name tgask yingshaoxo/tgask
+sudo docker run -d -e telegram_bot_token=TOKEN -e master_user_id=YOU_CHAT_ID --name tgask yingshaoxo/tgask
 ```
 
 #### Docker-Compose

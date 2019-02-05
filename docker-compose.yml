@@ -5,5 +5,5 @@ services:
     image: yingshaoxo/tgask
     environment:
      - telegram_bot_token=YOU NEED to CHANGE HERE
-     - master_chat_id=YOU NEED to CHANGE HERE, like 354524029
+     - master_user_id=YOU NEED to CHANGE HERE, like 131513300
     restart: always
