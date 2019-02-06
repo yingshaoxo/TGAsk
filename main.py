@@ -59,8 +59,6 @@ def handle_text_msg(bot, update):
     global waitting_for_master
     global io
 
-    kick_them_out_if_possible(bot, update)
-
     if update.message.from_user.id != master_user_id:
         pass
     else:
@@ -95,6 +93,8 @@ def handle_text_msg(bot, update):
                 update.message.reply_text(
                     f"I got this error: {e} \n Can you try again?")
 
+    kick_them_out_if_possible(bot, update)
+
 
 def handle_all_msg(bot, update):
     members = update.message.new_chat_members
@@ -105,7 +105,6 @@ def handle_all_msg(bot, update):
             })
             print(f"{user.id} came to this group")
         io.write_settings("people", people)
-        time.sleep(61)
         kick_them_out_if_possible(bot, update)
 
 
