@@ -93,8 +93,6 @@ def handle_text_msg(bot, update):
                 update.message.reply_text(
                     f"I got this error: {e} \n Can you try again?")
 
-    kick_them_out_if_possible(bot, update)
-
 
 def handle_all_msg(bot, update):
     members = update.message.new_chat_members
@@ -105,7 +103,7 @@ def handle_all_msg(bot, update):
             })
             print(f"{user.id} came to this group")
         io.write_settings("people", people)
-        kick_them_out_if_possible(bot, update)
+    kick_them_out_if_possible(bot, update)
 
 
 def kick_them_out_if_possible(bot, update):
@@ -143,15 +141,13 @@ def button(bot, update):
 
     right_answer = data['answer'][data["right_answer_index"]-1]
     if query.data == right_answer:
-        """
-        bot.edit_message_text(text=f"you're right",
-                              chat_id=query.message.chat_id,
-                              message_id=query.message.message_id)
-        """
         user_id = query.from_user.id
         if user_id in people:
             del people[user_id]
             io.write_settings("people", people)
+            Message = bot.send_message(chat_id=query.message.chat_id, text="you're right.\n\nWelcome!")
+            time.sleep(3)
+            Message.delete()
     else:
         """
         bot.edit_message_text(text=f"you're wroung",
