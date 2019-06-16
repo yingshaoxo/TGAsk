@@ -21,7 +21,6 @@ print(TOKEN)
 
 
 io = IO()
-q = io.Queue(maxsize=0)
 lock = threading.RLock()
 
 ROOT_DIR = "."
