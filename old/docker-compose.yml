@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  TGAsk:
+    image: yingshaoxo/tgask
+    environment:
+     - telegram_bot_token=YOU NEED to CHANGE HERE
+     - master_user_id=YOU NEED to CHANGE HERE, like 131513300
+    restart: always

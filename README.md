@@ -1,15 +1,14 @@
 # TGAsk
-A telegram bot for asking question to new chat member.
+A telegram bot aims to kill spam&ad and do a simple verifying.
 
 #### Features
-If they can not answer the question in one minute, they will be kicked out as quilckly as possible.
+Delete any group enter notifacation since it may contain AD.
 
-#### Docker
+#### Todo
+If they can't answer a question in 20 seconds, we kick them out.
+
+#### Usage
 ```
-sudo docker run -d -e telegram_bot_token=TOKEN -e master_user_id=YOU_USER_ID --name tgask yingshaoxo/tgask
+export TOKEN=121321714:AAH9Us4Wabcdefg-1aGD6_3mn-hhigklUqpZSE
+python3 main.py
 ```
-
-#### Docker-Compose
-First change `docker-compose.yml`
-
-Then run `docker-compose up -d`
