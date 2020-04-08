@@ -2,6 +2,7 @@ from telegram.ext import Updater
 from telegram.ext import CommandHandler
 from telegram.ext import MessageHandler, Filters
 import os
+import urllib3
 
 
 # Get environment variables
