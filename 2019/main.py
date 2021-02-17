@@ -51,32 +51,6 @@ def echo(update, context):
         # useless notifacation
         bot.delete_message(chat_id=chat_id, message_id=message_id)
 
-    """
-    new_chat_members = iupdate.message.new_chat_members
-    if new_chat_members:
-        new_chat_members_id = [user.id for user in new_chat_members]
-        print(f"new comming {update.message.from_user.username}")
-    left_chat_member = update.message.left_chat_member
-    if left_chat_member:
-        left_chat_member_id = left_chat_member.id
-        print(f"left {update.message.from_user.username}")
-
-    # delete user comming and left notification
-    if new_chat_members_id or left_chat_member_id:
-        bot.delete_message(chat_id=chat_id, message_id=message_id)
-        print(f"deleted {update.message.from_user.username}")
-    """
-
-    """
-    # admin only
-    admin_list = update.effective_chat.get_administrators()
-    admin_id_list = [admin.user.id for admin in admin_list]
-    user_who_sent = update.message.from_user.id
-    if user_who_sent not in admin_id_list:
-        # it's a spam
-        bot.delete_message(chat_id=chat_id, message_id=message_id)
-    """
-
 
 echo_handler = MessageHandler(Filters.all, echo)
 dispatcher.add_handler(echo_handler)
