@@ -34,7 +34,9 @@ func main() {
 			bot.Send(msg)
 		*/
 		if len(update.Message.Text) == 0 {
-			bot.DeleteMessage(tgbotapi.DeleteMessageConfig{ChatID: update.Message.Chat.ID, MessageID: update.Message.MessageID})
+			if update.Message.LeftChatMember != nil || update.Message.NewChatMembers != nil {
+				bot.DeleteMessage(tgbotapi.DeleteMessageConfig{ChatID: update.Message.Chat.ID, MessageID: update.Message.MessageID})
+			}
 		}
 	}
 }
