@@ -1,0 +1,24 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "dist/main.js",
+  "scripts": {
+    "dev": "ts-node-dev  --respawn --transpile-only --exit-child --watch src src/main.ts",
+    "build": "tsc -b",
+    "start": "node dist/server/src/main.js"
+  },
+  "engines": {
+    "node": "18.x"
+  },
+  "dependencies": {
+    "@types/node-telegram-bot-api": "^0.57.1",
+    "mongoose": "^6.4.0",
+    "node-telegram-bot-api": "^0.58.0",
+    "tslib": "^2.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^16.11.26",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "^4.6.2"
+  }
+}

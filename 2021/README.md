@@ -9,6 +9,6 @@ If they can't answer a question in 20 seconds, we kick them out.
 
 #### Usage
 ```
-npm i
-npm run dev
+Change the TOKEN inside of main.go
+./compile.sh
 ```
