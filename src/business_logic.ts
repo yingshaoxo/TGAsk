@@ -37,6 +37,10 @@ const getRatio = (guess: number | undefined | null) => {
   return 1
 }
 
+export const checkIfAccountExists = async (id: number): Promise<Boolean> => {
+  return (await models.AccountModel.exists({ id })) ? true : false
+}
+
 export const createAccount = async (id: number): Promise<Boolean> => {
   try {
     if (!await models.AccountModel.exists({ id })) {
@@ -55,7 +59,37 @@ export const createAccount = async (id: number): Promise<Boolean> => {
   }
 }
 
-export const betOn = async (id: number, guess: number, money: number): Promise<String> => {
+export const deleteAllAccount = async () => {
+  await models.AccountModel.deleteMany()
+  return "success"
+}
+
+export const deleteAllGuessing = async () => {
+  await models.MarketGuessingModel.deleteMany()
+  return "success"
+}
+
+export const getBalance = async (id: number) => {
+  const user = await models.AccountModel.findOne({ id: id });
+  if (user) {
+    return user.balance ?? 0
+  } else {
+    return 0
+  }
+}
+
+export const modifyBalance = async (id: number, changes: number) => {
+  const user = await models.AccountModel.findOne({ id: id });
+  if (user?.balance != null) {
+    user.balance += changes
+    await user.save()
+    return user.balance
+  } else {
+    return null
+  }
+}
+
+export const betOn = async (id: number, guess: number, money: number): Promise<string> => {
   try {
     if (!makeSureGuessInRange(guess)) {
       return "Error, guess should only be -1, 0, 1"
@@ -84,7 +118,7 @@ export const betOn = async (id: number, guess: number, money: number): Promise<S
       await marketGuessing.save()
       await user.save()
 
-      return `Success, now you have a bet on ${guess} with money of ${money}`
+      return `Success, now you have a bet on ${guessToString(guess)} with money of ${money}`
     }
   } catch (e) {
     console.log(e)
@@ -161,15 +195,27 @@ export const revealResultToEveryOne = async () => {
 }
 
 export const getBetInfoListString = async () => {
-  const all = await models.MarketGuessingModel.find({})
-  return all.map((e) => {
+  let all = await models.MarketGuessingModel.find({}) as any
+  all = all.map((e: any) => {
     return `id: ${e.id}, guess: ${guessToString(e.guess)}, moneyOnBet: ${e.moneyOnBet}\n`
   })
+  const result = all.join("")
+  if (result == "") {
+    return "No bet info yet"
+  } else {
+    return result
+  }
 }
 
 export const getAccountsListString = async () => {
-  const all = await models.AccountModel.find({})
-  return all.map((e) => {
+  let all = await models.AccountModel.find({}) as any
+  all = all.map((e: any) => {
     return `id: ${e.id}, balance: ${e.balance}\n`
   })
+  const result = all.join("")
+  if (result == "") {
+    return "No accounts data yet"
+  } else {
+    return result
+  }
 }

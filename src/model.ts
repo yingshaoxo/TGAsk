@@ -3,6 +3,10 @@ import { HydratedDocument } from 'mongoose';
 
 const { Schema } = mongoose;
 
+export const connect = async () => {
+  await mongoose.connect('mongodb://127.0.0.1:27017/test');
+}
+
 const AccountSchema = new Schema({
   id: Number, // String is shorthand for {type: String}
   createdDate: { type: Date, default: Date.now },
