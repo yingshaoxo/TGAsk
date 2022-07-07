@@ -1,7 +1,7 @@
-import { Message } from "node-telegram-bot-api";
-import * as models from './model'
+import { Message, CallbackQuery } from "node-telegram-bot-api";
+import * as models from './models'
 import * as business_logic from './business_logic'
-import * as command_handler from './command_handler'
+import * as msg_handler from './msg_handler'
 
 const TelegramBot = require('node-telegram-bot-api');
 
@@ -37,7 +37,7 @@ const main = async () => {
     }
 
     console.log(`\n\nget command: ${command}\nget content: ${content}`)
-    await command_handler.command_responser(command, content, bot, chatId, userId)
+    await msg_handler.command_response(command, content, bot, chatId, userId)
   });
 
 
@@ -45,23 +45,43 @@ const main = async () => {
     const chatId = msg.chat.id;
     const userId = msg.from?.id
 
-    if (userId) {
-      await business_logic.createAccount(userId)
-    }
-
-    if (msg.text?.startsWith('/')) {
+    if (!userId) {
       return
     }
 
-    console.log(`get text: ${msg.text}`)
+    await business_logic.createAccount(userId)
 
-    bot.sendMessage(chatId, command_handler.default_message,
-      {
-        parse_mode: 'MarkdownV2',
-      }
-    );
-    // bot.sendMessage(chatId, 'Received your message');
+    if (msg.text?.startsWith('/')) {
+      return
+    } else {
+      console.log(`get text: ${msg.text}`)
+      msg_handler.text_response(
+        msg.text ?? "",
+        bot,
+        chatId,
+        userId
+      )
+    }
   });
+
+
+  bot.on("callback_query", async (callback_query: CallbackQuery) => {
+    const user_id = callback_query.from.id
+    const chat_id = callback_query?.message?.chat?.id ?? null
+    const content = callback_query.data ?? ""
+    if ((chat_id == null) || (content == "")) {
+      return
+    }
+
+    console.log(user_id, chat_id, content)
+
+    msg_handler.callback_response(
+      content,
+      bot,
+      chat_id,
+      user_id
+    )
+  })
 }
 
 main()

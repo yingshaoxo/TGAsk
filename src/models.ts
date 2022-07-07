@@ -43,23 +43,38 @@ export const MarketGuessingModel = mongoose.model<Interface_MarketGuessing>('Mar
 export const TaskTypeMap = {
   bet: 1
 }
-export const processMap = {
-  1: {
-    progressList: [1, 2],
-    nameToProgressMap: {
-      chooseBetDirection: 1,
-      chooseBetMoney: 2,
-    }
+export type TaskTypeMap_Keys = keyof typeof TaskTypeMap;
+export type TaskTypeMap_Values = typeof TaskTypeMap[TaskTypeMap_Keys];
+export interface Process_Map_Value {
+  progressList: number[],
+  nameToProgressMap: {
+    chooseBetDirection: number,
+    chooseBetMoney: number,
+    done: number,
   }
 }
+export const ProcessMap = {
+  1: {
+    progressList: [0, 1, 2],
+    nameToProgressMap: {
+      chooseBetDirection: 0,
+      chooseBetMoney: 1,
+      done: 2,
+    }
+  } as Process_Map_Value
+}
+export type ProcessMap_Keys = keyof typeof ProcessMap;
+export type ProcessMap_Values = typeof ProcessMap[ProcessMap_Keys];
 export interface Interface_PersonalTaskProcess {
   id: number,
   taskType: number,
   process: number,
+  data: any,
 }
 const PersonalTaskProcessModelSchema = new Schema<Interface_PersonalTaskProcess>({
   id: Number,
   taskType: Number,
   process: Number,
+  data: { type: Schema.Types.Mixed, default: {} },
 })
 export const PersonalTaskProcessModel = mongoose.model<Interface_PersonalTaskProcess>('PersonalTaskProcess', PersonalTaskProcessModelSchema);

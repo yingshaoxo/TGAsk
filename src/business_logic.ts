@@ -1,5 +1,5 @@
 import { Models } from 'mongoose'
-import * as models from './model'
+import * as models from './models'
 
 const makeSureGuessInRange = (guess: number) => {
   if (
@@ -13,7 +13,7 @@ const makeSureGuessInRange = (guess: number) => {
   }
 }
 
-const guessToString = (guess: any) => {
+export const guessToString = (guess: any) => {
   if ((guess == null) || (guess == undefined)) {
     return 'undefined'
   }
@@ -23,6 +23,22 @@ const guessToString = (guess: any) => {
     return 'up'
   } else if (guess == -1) {
     return 'down'
+  }
+}
+
+export const stringToGuess = (str: string | null | undefined) => {
+  if ((str == null) || (str == undefined)) {
+    return null
+  }
+
+  if (str == "keep") {
+    return 0
+  }
+  if (str == "up") {
+    return 1
+  }
+  if (str == "down") {
+    return -1
   }
 }
 
@@ -217,5 +233,69 @@ export const getAccountsListString = async () => {
     return "No accounts data yet"
   } else {
     return result
+  }
+}
+
+export const has_process = async (id: number) => {
+  return (await models.PersonalTaskProcessModel.exists({ id })) ? true : false
+}
+
+export const process_has_been_done = async (id: number) => {
+  const one_process = await models.PersonalTaskProcessModel.findOne({ id })
+  if (!one_process) {
+    return true
+  } else {
+    if (one_process.taskType != null) {
+      const processValue = models.ProcessMap[one_process.taskType as models.ProcessMap_Keys] as models.Process_Map_Value
+      if (one_process.process >= processValue.progressList[processValue.progressList.length - 1]) {
+        return true
+      } else {
+        return false
+      }
+    }
+  }
+  return true
+}
+
+export const add_a_process = async (id: number, taskType: models.TaskTypeMap_Values, process = 0, data = {}) => {
+  if (await has_process(id)) {
+    return false
+  }
+
+  console.log(id, taskType, process, data)
+
+  const newProcess = new models.PersonalTaskProcessModel({
+    id,
+    taskType,
+    process,
+    data
+  })
+  await newProcess.save()
+
+  return true
+}
+
+export const get_process = async (id: number) => {
+  return await models.PersonalTaskProcessModel.findOne({ id })
+}
+
+export const push_the_process = async (id: number) => {
+  const one_process = await models.PersonalTaskProcessModel.findOne({ id })
+  if (one_process) {
+    one_process.process += 1
+    await one_process.save()
+
+    if (await process_has_been_done(id)) {
+      await models.PersonalTaskProcessModel.deleteMany({ id })
+    }
+  }
+}
+
+export const get_process_num = async (id: number) => {
+  const one_process = await models.PersonalTaskProcessModel.findOne({ id })
+  if (!one_process) {
+    return null
+  } else {
+    return one_process.process
   }
 }
