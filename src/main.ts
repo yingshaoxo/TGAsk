@@ -9,7 +9,7 @@ const main = async () => {
   await models.connect()
 
   // replace the value below with the Telegram token you receive from @BotFather
-  const token = '684605925:AAEH3vsZ4ilg9EysZdAwDH8KE2R-';
+  const token = '684605925:AAEH3vsZ4ilg9EysZdAwDH8KE2R-NECdV5E';
 
   // Create a bot that uses 'polling' to fetch new updates
   const bot = new TelegramBot(token, { polling: true });
