@@ -14,6 +14,7 @@ const main = async () => {
   // Create a bot that uses 'polling' to fetch new updates
   const bot = new TelegramBot(token, { polling: true });
 
+
   // Matches "/[whatever]"
   bot.onText(/\/(.+)/, async (msg: Message, match: any[]) => {
     const chatId = msg.chat.id;
@@ -38,6 +39,7 @@ const main = async () => {
     console.log(`\n\nget command: ${command}\nget content: ${content}`)
     await command_handler.command_responser(command, content, bot, chatId, userId)
   });
+
 
   bot.on('message', async (msg: Message) => {
     const chatId = msg.chat.id;
