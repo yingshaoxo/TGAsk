@@ -6,9 +6,3 @@ Delete any group enter notifacation since it may contain AD.
 
 #### Todo
 If they can't answer a question in 20 seconds, we kick them out.
-
-#### Usage
-```
-npm i
-npm run dev
-```
