@@ -13,3 +13,5 @@ chmod 777 $executable_target_path
 remind="$executable_target_path <bot_token>"
 echo '\n'
 echo $remind
+
+#rsync -avh --progress ./* root@104.292.209.163:/root/tgask/
