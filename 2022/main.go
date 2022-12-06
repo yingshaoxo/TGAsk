@@ -65,7 +65,6 @@ func telegram_bot_loop() {
 
 				if err == nil {
 					log.Println("Deleted a record because the user is human")
-					// bot.Request(tgbotapi.DeleteMessageConfig{ChatID: update.CallbackQuery.Message.Chat.ID, MessageID: update.CallbackQuery.Message.MessageID})
 					// log.Println("Deleted the message I sent out")
 					temporary_messages, _ := database.Delete_all_temporary_messages_that_was_related_to_a_user_in_a_specific_chat_group(
 						db,
