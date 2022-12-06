@@ -26,7 +26,9 @@ var db *gorm.DB
 
 func setup_logger(log_file_path string) {
 	// delete old log
-	disk_tool.Remove_a_file_or_folder(log_file_path)
+	if disk_tool.Exists(log_file_path) {
+		disk_tool.Remove_a_file_or_folder(log_file_path)
+	}
 	// set log file
 	f, err := os.OpenFile(log_file_path, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
