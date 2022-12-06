@@ -63,11 +63,25 @@ func telegram_bot_loop() {
 
 				if err == nil {
 					log.Println("Deleted a record because the user is human")
-					bot.Request(tgbotapi.DeleteMessageConfig{ChatID: update.CallbackQuery.Message.Chat.ID, MessageID: update.CallbackQuery.Message.MessageID})
-					log.Println("Deleted the message I sent out")
+					// bot.Request(tgbotapi.DeleteMessageConfig{ChatID: update.CallbackQuery.Message.Chat.ID, MessageID: update.CallbackQuery.Message.MessageID})
+					// log.Println("Deleted the message I sent out")
+					temporary_messages, _ := database.Delete_all_temporary_messages_that_was_related_to_a_user_in_a_specific_chat_group(
+						db,
+						chat_id,
+						user_id,
+					)
+					for _, temporary_message := range temporary_messages {
+						the_chat_id, _ := string_tool.String_to_int64(temporary_message.Chat_id)
+						the_message_id, _ := string_tool.String_to_int64(temporary_message.Message_id)
+						bot.Request(tgbotapi.DeleteMessageConfig{
+							ChatID:    the_chat_id,
+							MessageID: int(the_message_id),
+						})
+					}
+					log.Println("Human: Deleted those temporary message generated during the process")
 				}
 			}
-			// continue
+			continue
 		}
 
 		if update.Message == nil { // ignore any non-Message Updates
@@ -75,12 +89,6 @@ func telegram_bot_loop() {
 		}
 
 		log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
-
-		/*
-			msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
-			msg.ReplyToMessageID = update.Message.MessageID
-			bot.Send(msg)
-		*/
 
 		if len(update.Message.Text) == 0 {
 			if update.Message.LeftChatMember != nil || update.Message.NewChatMembers != nil {
@@ -98,10 +106,35 @@ func telegram_bot_loop() {
 					// send confirm button out
 					msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Hi, "+user.FirstName+user.LastName+"!"+"\n\n"+"Please click the confirm button to let me know that you are a human.")
 					msg.ReplyMarkup = buttons
-					bot.Send(msg)
+					the_msg_bot_sent, err := bot.Send(msg)
+					if err == nil {
+						// save bot sent temporary messages to database so that we can delete it later
+						temporary_msg_id := string_tool.Int_to_string(the_msg_bot_sent.MessageID)
+						temporary_msg_chat_id := chat_id
+						temporary_msg_user_id := user_id
+						database.Save_temporary_message_if_it_is_in_the_old_user_record_table(
+							db,
+							temporary_msg_id,
+							temporary_msg_chat_id,
+							temporary_msg_user_id,
+						)
+						log.Println("save a temporary message: ", temporary_msg_id, temporary_msg_chat_id, temporary_msg_user_id)
+					}
 				}
 			}
 		}
+
+		// save user sent temporary messages to database so that we can delete it later
+		// include pictures and so on
+		temporary_msg_id := string_tool.Int_to_string(update.Message.MessageID)
+		temporary_msg_chat_id := string_tool.Int64_to_string(update.Message.Chat.ID)
+		temporary_msg_user_id := string_tool.Int64_to_string(update.Message.From.ID)
+		database.Save_temporary_message_if_it_is_in_the_old_user_record_table(
+			db,
+			temporary_msg_id,
+			temporary_msg_chat_id,
+			temporary_msg_user_id,
+		)
 	}
 }
 
@@ -117,7 +150,7 @@ func my_operation_loop() {
 			bigger := tools.Check_if_two_timestamps_has_a_distance_that_bigger_than_x_seconds(
 				current_timestamp_string,
 				the_user_registering_timestamp_string,
-				"180", //3 minutes
+				"30", //30 seconds
 			)
 
 			if bigger {
@@ -134,12 +167,26 @@ func my_operation_loop() {
 
 				database.Delete_a_user_record(db, user.Chat_id, user.User_id)
 				log.Println("kicked a new user out: ", chat_id, user_id)
+
+				// delete all temporary messages generated during this verifying process
+				temporary_msg_chat_id := string_tool.Int64_to_string(chat_id)
+				temporary_msg_user_id := string_tool.Int64_to_string(user_id)
+				temporary_messages, _ := database.Delete_all_temporary_messages_that_was_related_to_a_user_in_a_specific_chat_group(
+					db,
+					temporary_msg_chat_id,
+					temporary_msg_user_id,
+				)
+				for _, temporary_message := range temporary_messages {
+					the_chat_id, _ := string_tool.String_to_int64(temporary_message.Chat_id)
+					the_message_id, _ := string_tool.String_to_int64(temporary_message.Message_id)
+					bot.Request(tgbotapi.DeleteMessageConfig{
+						ChatID:    the_chat_id,
+						MessageID: int(the_message_id),
+					})
+				}
+				log.Println("Not human: Delete all temporary messages generated during this verifying process")
 			}
-
-			// fmt.Println(user)
 		}
-
-		// println("hi")
 	}
 }
 

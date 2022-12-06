@@ -34,3 +34,27 @@ go run <bot_token> &
 ```bash
 go test tests/database_test.go #all test functions will run in a sequence way
 ```
+
+##### Thinking
+
+###### 1
+
+Create a basic database table to save new_user_record.
+
+###### 2
+
+We need to create a new table to save temporary messages.
+
+message_id, chat_id, user_id
+
+We only save those messages that inside of the old 'new_user_record' table. (Include those messages that was sent by this bot)
+
+When we kick out a user, we delete all messages that was related to that user.
+
+###### 3
+
+I don't think Golang is a good programming language, because:
+
+1. It doesn't have `null` type, for dart or python or javascript or java, they all have this concept.
+
+2. It doesn't have `try-catch` mechanism, which is super bad

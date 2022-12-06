@@ -22,6 +22,8 @@ var db *gorm.DB
 var my_context context.Context
 var cancel context.CancelFunc
 
+var chat_id string = "11"
+
 func TestMain(m *testing.M) {
 	my_context, cancel = context.WithTimeout(context.Background(), 10000*time.Second)
 	defer cancel()
@@ -54,19 +56,19 @@ func Test_get_a_user(t *testing.T) {
 }
 
 func Test_add_users(t *testing.T) {
-	err := database.Add_a_new_user_record(db, "11", "1", false)
+	err := database.Add_a_new_user_record(db, chat_id, "1", false)
 	if err != nil {
 		t.Fatalf("We should be able to add a user")
 	}
 
-	err = database.Add_a_new_user_record(db, "11", "2", true)
+	err = database.Add_a_new_user_record(db, chat_id, "2", true)
 	if err != nil {
 		t.Fatalf("We should be able to add a user")
 	}
 }
 
 func Test_get_a_user2(t *testing.T) {
-	_, err := database.Get_a_user_record(db, "11", "1")
+	_, err := database.Get_a_user_record(db, chat_id, "1")
 	// fmt.Println(a_user)
 	if err != nil {
 		t.Fatalf("There should have a user")
@@ -91,3 +93,60 @@ func Test_get_a_unverified_user_list(t *testing.T) {
 // 		t.Fatalf("It should remove the new_users table: \n" + err.Error())
 // 	}
 // }
+
+func Test_temporary_message_functions(t *testing.T) {
+	result := database.Delete_all_temporary_messages(db)
+	if result == false {
+		t.Fatalf("It should delete all messages")
+	}
+
+	result = database.Save_temporary_message_if_it_is_in_the_old_user_record_table(
+		db,
+		"77",
+		chat_id,
+		"1",
+	)
+
+	if result == false {
+		t.Fatalf("The message should get saved")
+	}
+
+	messages := database.Get_all_temporary_messages(db)
+	if len(messages) == 0 {
+		t.Fatalf("The message should have messages")
+	}
+
+	database.Delete_all_temporary_messages_that_was_related_to_a_user_in_a_specific_chat_group(db,
+		chat_id,
+		"1",
+	)
+	messages = database.Get_all_temporary_messages(db)
+	if len(messages) != 0 {
+		t.Fatalf("The list should be empty now")
+	}
+
+	database.Save_temporary_message_if_it_is_in_the_old_user_record_table(
+		db,
+		"77",
+		chat_id,
+		"1",
+	)
+	database.Save_temporary_message_if_it_is_in_the_old_user_record_table(
+		db,
+		"78",
+		chat_id,
+		"2",
+	)
+	database.Delete_all_temporary_messages_that_was_related_to_a_user_in_a_specific_chat_group(db,
+		chat_id,
+		"1",
+	)
+	messages = database.Get_all_temporary_messages(db)
+	if len(messages) == 0 {
+		t.Fatalf("The list should have one message")
+	}
+	message := messages[0]
+	if message.User_id != "2" {
+		t.Fatalf("function Delete_all_temporary_messages_that_was_related_to_a_user_in_a_specific_chat_group() not work")
+	}
+}
