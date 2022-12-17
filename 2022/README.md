@@ -22,7 +22,7 @@ or
 ```bash
 sudo apt install golang -y
 
-#go get -d -u -t ./... && go mod tidy
+go get
 
 go run <bot_token> &
 ```
@@ -42,7 +42,7 @@ mkdir binary
 cd binary
 gox -output="TGbot_{{.OS}}_{{.Arch}}" -osarch="linux/amd64" -osarch="darwin/arm64" ../
 
-#gox -output="LocalShow_{{.OS}}_{{.Arch}}" -osarch="linux/amd64" -osarch="linux/arm64" -osarch="windows/amd64" -osarch="windows/386" ../
+#gox -output="TGbot_{{.OS}}_{{.Arch}}" -osarch="linux/amd64" -osarch="linux/arm64" -osarch="windows/amd64" -osarch="windows/386" ../
 ```
 
 ##### Thinking

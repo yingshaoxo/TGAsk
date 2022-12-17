@@ -28,7 +28,7 @@ func TestMain(m *testing.M) {
 	my_context, cancel = context.WithTimeout(context.Background(), 10000*time.Second)
 	defer cancel()
 
-	db = database.Init_database(store.Sqlite_database_file_path)
+	db = database.Init_database(store.Sqlite_test_database_file_path)
 	fmt.Println("database initialized")
 	defer func() {
 	}()
